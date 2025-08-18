@@ -13,7 +13,8 @@ export default function App() {
 
   return (
     <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
-      <h1>Ingredient Substitution</h1>
+      <h1>🥖 Baking Substitution Helper</h1>
+      <p>Type in an ingredient you don’t have, and I’ll suggest a substitute.</p>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
