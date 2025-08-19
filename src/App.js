@@ -1,40 +1,48 @@
 import React, { useState } from "react";
 
-export default function App() {
-  const [ingredient, setIngredient] = useState("");
-  const [result, setResult] = useState("");
+function App() {
+  const [userInput, setUserInput] = useState("");
+  const [response, setResponse] = useState("");
 
-  // For now, just simulate a response when you click the button
-  function handleSubmit(e) {
-    e.preventDefault();
-    // Hardcoded substitution response:
-    setResult(`If you don't have ${ingredient}, you can use applesauce or mashed banana!`);
-  }
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:5000/substitute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_input: userInput }),
+      });
+
+      const data = await res.json();
+
+      if (data.reply) {
+        setResponse(data.reply);
+      } else if (data.error) {
+        setResponse(`Error: ${data.error}`);
+      }
+    } catch (err) {
+      setResponse(`Error connecting to backend: ${err.message}`);
+    }
+  };
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
-      <h1>🥖 Baking Substitution Helper</h1>
-      <p>Type in an ingredient you don’t have, and I’ll suggest a substitute.</p>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Enter an ingredient"
-          value={ingredient}
-          onChange={(e) => setIngredient(e.target.value)}
-          style={{ padding: 8, fontSize: 16, width: 300 }}
-          required
-        />
-        <button type="submit" style={{ padding: 8, marginLeft: 10, fontSize: 16 }}>
-          Get Substitution
-        </button>
-      </form>
+    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
+      <h1>Baking Substitutions</h1>
+      <input
+        type="text"
+        value={userInput}
+        placeholder="Enter ingredient..."
+        onChange={(e) => setUserInput(e.target.value)}
+        style={{ padding: "8px", width: "250px", marginRight: "10px" }}
+      />
+      <button onClick={handleSubmit} style={{ padding: "8px 12px" }}>
+        Get Substitution
+      </button>
 
-      {result && (
-        <div style={{ marginTop: 20, backgroundColor: "#f0f0f0", padding: 15, borderRadius: 5 }}>
-          <strong>Substitution Suggestion:</strong>
-          <p>{result}</p>
-        </div>
-      )}
+      <div style={{ marginTop: "20px" }}>
+        {response && <p>{response}</p>}
+      </div>
     </div>
   );
 }
+
+export default App;
