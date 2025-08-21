@@ -2,9 +2,14 @@ import React, { useState } from "react";
 
 function App() {
   const [userInput, setUserInput] = useState("");
-  const [response, setResponse] = useState("");
+  const [substitution, setSubstitution] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSubstitution("");
+
     try {
       const res = await fetch("http://127.0.0.1:5000/substitute", {
         method: "POST",
@@ -14,35 +19,89 @@ function App() {
 
       const data = await res.json();
 
-      if (data.reply) {
-        setResponse(data.reply);
+      if (data.substitution) {
+        setSubstitution(data.substitution);
       } else if (data.error) {
-        setResponse(`Error: ${data.error}`);
+        setSubstitution("⚠️ Error: " + data.error);
       }
     } catch (err) {
-      setResponse(`Error connecting to backend: ${err.message}`);
+      setSubstitution("⚠️ Error connecting to backend");
     }
+
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "sans-serif" }}>
-      <h1>Baking Substitutions</h1>
-      <input
-        type="text"
-        value={userInput}
-        placeholder="Enter ingredient..."
-        onChange={(e) => setUserInput(e.target.value)}
-        style={{ padding: "8px", width: "250px", marginRight: "10px" }}
-      />
-      <button onClick={handleSubmit} style={{ padding: "8px 12px" }}>
-        Get Substitution
-      </button>
+    <div style={styles.container}>
+      <h1 style={styles.header}>🥖 Baking Subzz</h1>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <textarea
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="What can I use instead of eggs in brownies?"
+          style={styles.textarea}
+        />
+        <button type="submit" style={styles.button}>Get Substitution</button>
+      </form>
 
-      <div style={{ marginTop: "20px" }}>
-        {response && <p>{response}</p>}
-      </div>
+      {loading && <p style={styles.loading}>👩‍🍳 Mixing up ideas...</p>}
+      {substitution && <div style={styles.result}>{substitution}</div>}
     </div>
   );
 }
+
+const styles = {
+  container: {
+    fontFamily: "'Trebuchet MS', sans-serif",
+    padding: "2rem",
+    maxWidth: "600px",
+    margin: "auto",
+    textAlign: "center",
+  },
+  header: {
+    color: "#c65353",
+  },
+  form: {
+    marginBottom: "1rem",
+  },
+  input: {
+    width: "70%",
+    padding: "0.5rem",
+    marginRight: "0.5rem",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+  },
+  button: {
+    padding: "0.5rem 1rem",
+    backgroundColor: "#c65353",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+  },
+  loading: {
+    marginTop: "1rem",
+    color: "#666",
+  },
+  result: {
+    marginTop: "1rem",
+    padding: "1rem",
+    backgroundColor: "#fff4f4",
+    borderRadius: "8px",
+    border: "1px solid #ffd6d6",
+    textAlign: "left",
+  },
+  textarea: {
+  width: "70%",
+  minHeight: "3rem",
+  padding: "0.5rem",
+  marginRight: "0.5rem",
+  borderRadius: "8px",
+  border: "1px solid #ddd",
+  fontFamily: "inherit",
+  resize: "vertical", // user can drag to expand
+  whiteSpace: "pre-wrap", // wraps text nicely
+},
+};
 
 export default App;
