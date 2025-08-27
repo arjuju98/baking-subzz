@@ -45,7 +45,11 @@ function App() {
       </form>
 
       {loading && <p style={styles.loading}>👩‍🍳 Mixing up ideas...</p>}
-      {substitution && <div style={styles.result}>{substitution}</div>}
+      {substitution && (
+        <div style={styles.result}>
+          <pre style={styles.preformatted}>{substitution}</pre>
+        </div>
+      )}
     </div>
   );
 }
@@ -63,13 +67,6 @@ const styles = {
   },
   form: {
     marginBottom: "1rem",
-  },
-  input: {
-    width: "70%",
-    padding: "0.5rem",
-    marginRight: "0.5rem",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
   },
   button: {
     padding: "0.5rem 1rem",
@@ -92,16 +89,23 @@ const styles = {
     textAlign: "left",
   },
   textarea: {
-  width: "70%",
-  minHeight: "3rem",
-  padding: "0.5rem",
-  marginRight: "0.5rem",
-  borderRadius: "8px",
-  border: "1px solid #ddd",
-  fontFamily: "inherit",
-  resize: "vertical", // user can drag to expand
-  whiteSpace: "pre-wrap", // wraps text nicely
-},
+    width: "70%",
+    minHeight: "3rem",
+    padding: "0.5rem",
+    marginRight: "0.5rem",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    fontFamily: "inherit",
+    resize: "vertical",
+    whiteSpace: "pre-wrap",
+  },
+  preformatted: {
+    fontFamily: "'Trebuchet MS', sans-serif", // Keep your app font
+    whiteSpace: "pre-wrap", // Preserves line breaks and spacing
+    margin: 0, // Remove default margins
+    fontSize: "14px",
+    lineHeight: "1.4",
+  }
 };
 
 export default App;
