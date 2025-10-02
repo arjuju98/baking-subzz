@@ -1,13 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import App from "./App";
+import BakingsubzFE from "./bakingsubzFE";  // Capitalize here
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
 root.render(
   <StrictMode>
-    <App />
+    <BakingsubzFE />   {/* Capitalize here too */}
   </StrictMode>
 );
